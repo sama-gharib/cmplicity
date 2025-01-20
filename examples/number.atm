@@ -1,7 +1,0 @@
-States: IntegerPart, FloatPart;
-Final: IntegerPart, FloatPart;
-Initial: IntegerPart;
-Transitions:
-    (IntegerPart, [0-9], IntegerPart)
-    (IntegerPart, ., FloatPart)
-    (FloatPart, [0-9], FloatPart);
