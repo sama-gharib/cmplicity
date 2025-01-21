@@ -345,7 +345,7 @@ TransitionToken CreateTransitionToken(char * s) {
 					}
 				break;
 				case TPSFinished:
-					fprintf(stderr, "Found character after transition : '%c'\n", c);
+					fprintf(stderr, "Found character after transition : '%c'. Expected ',' or ';'.\n", c);
 					interrupt = true;
 				break;
 			}
