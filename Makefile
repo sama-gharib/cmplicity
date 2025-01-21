@@ -7,7 +7,7 @@ example: examples/number.atm
 examples/number.atm: cmp
 	@mkdir -p examples
 	@echo "States: IntegerPart, FloatPart;" > examples/number.atm
-	@echo "Final: IntegerPart, FloatPart;" >> examples/number.atm
+	@echo "Finals: IntegerPart, FloatPart;" >> examples/number.atm
 	@echo "Initial: IntegerPart;" >> examples/number.atm
 	@echo "Transitions:" >> examples/number.atm
 	@echo "    (IntegerPart, [0-9], IntegerPart)" >> examples/number.atm
