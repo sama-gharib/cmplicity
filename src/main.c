@@ -32,11 +32,11 @@ int main(int argc, char ** argv) {
 	}
 	fclose(source);
 
+	int exit_code = EXIT_SUCCESS;
+
 	if (strcmp(argv[1], "automaton") == 0) {
 
 		Automaton test = LoadAutomaton(file_content);
-
-		free(file_content);
 
 		if (test.initial == NULL) {
 			printf("Could not load automaton.\n");
@@ -53,11 +53,13 @@ int main(int argc, char ** argv) {
 		}
 	} else if (strcmp(argv[1], "regex") == 0) {
 		fprintf(stderr, "Mode regex is not yet implemented.\n");
-		return EXIT_FAILURE;
+		exit_code = EXIT_FAILURE;
 	} else {
 		fprintf(stderr, "Unknown mode : '%s'\n", argv[1]);
-		return EXIT_FAILURE;
+		exit_code = EXIT_FAILURE;
 	}
 
-	return EXIT_SUCCESS;
+	free(file_content);
+
+	return exit_code;
 }
