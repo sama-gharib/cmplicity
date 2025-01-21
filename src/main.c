@@ -2,24 +2,62 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int main() {
-	printf("%s\n", "Hello World !");
+int main(int argc, char ** argv) {
 
-	State q0 = CreateState(true);
-	State q1 = CreateState(true);
-	AddTransition(&q0, RangeTransition('0', '9', &q0));
-	AddTransition(&q0, ClassicTransition('.', &q1));
-	AddTransition(&q1, RangeTransition('0', '9', &q1));
+	if (argc != 4) {
+		printf("Usage : cmp ['automaton' | 'regex'] filepath word_to_test\n");
 
-	printf("%d %d %d %d\n", 
-		Match(&q0, "9.6682", 0),
-		Match(&q0, "12.56.1", 0),
-		Match(&q0, "6844", 0),
-		Match(&q0, "abab", 0)
-	);
+		return EXIT_FAILURE;
+	}
 
-	printf("%s\n", "Done !");
+	FILE * source = fopen(argv[2], "r");
+	if (source == NULL) {
+		fprintf(stderr, "Could not read file '%s'\n", argv[2]);
+		return EXIT_FAILURE;
+	}
+
+	// Calculating file size
+	fseek(source, 0, SEEK_END);
+	size_t file_length = ftell(source);
+	rewind(source);
+
+	// Reading file
+	char * file_content = malloc(sizeof(char) * (file_length + 1));
+	file_content[file_length] = '\0';
+	size_t read_cursor = 0;
+	while (fread(file_content+read_cursor, 1, 1, source)) {
+		read_cursor ++;
+	}
+	fclose(source);
+
+	if (strcmp(argv[1], "automaton") == 0) {
+
+		Automaton test = LoadAutomaton(file_content);
+
+		free(file_content);
+
+		if (test.initial == NULL) {
+			printf("Could not load automaton.\n");
+			return EXIT_FAILURE;
+		} else {
+			printf("The word '%s' is ", argv[3]);
+			if (Match(test.initial, argv[3], 0)) {
+				printf("recognized.\n");
+			} else {
+				printf("not recognized.\n");
+			}
+
+			UnloadAutomaton(&test);
+		}
+	} else if (strcmp(argv[1], "regex") == 0) {
+		fprintf(stderr, "Mode regex is not yet implemented.\n");
+		return EXIT_FAILURE;
+	} else {
+		fprintf(stderr, "Unknown mode : '%s'\n", argv[1]);
+		return EXIT_FAILURE;
+	}
 
 	return EXIT_SUCCESS;
 }

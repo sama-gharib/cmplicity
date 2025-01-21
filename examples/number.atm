@@ -2,6 +2,6 @@ States: IntegerPart, FloatPart;
 Finals: IntegerPart, FloatPart;
 Initial: IntegerPart;
 Transitions:
-    (IntegerPart, [0-9], IntegerPart)
-    (IntegerPart, ., FloatPart)
+    (IntegerPart, [0-9], IntegerPart),
+    (IntegerPart, ., FloatPart),
     (FloatPart, [0-9], FloatPart);

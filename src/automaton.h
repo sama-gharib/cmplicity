@@ -5,7 +5,7 @@
 #include <string.h>
 #include "vector.h"
 
-#define PARSING_BUFFER_SIZE 32
+#define PARSING_BUFFER_SIZE 64
 
 typedef struct {
 	Vector successors;
@@ -32,14 +32,37 @@ typedef struct {
 
 } ParsingBuffer;
 
+typedef struct {
+	char * predecessor;
+	char min;
+	char max;
+	char * successor;
+
+} TransitionToken;
+
 typedef enum {
 	APSDefault     = 0b00001,
 	APSStates      = 0b00010,
 	APSInitial     = 0b00100,
 	APSFinals      = 0b01000,
-	APSTransitions = 0b10000
+	APSTransitions = 0b10000,
+	APSAllDone     = 0b11111
 
 } AutomatonParserState;
+
+typedef enum {
+	TPSDefault,
+	TPSPredecessor,
+	TPSTerminal,
+	TPSTerminalDone,
+	TPSMin,
+	TPSDash,
+	TPSMax,
+	TPSRangeClose,
+	TPSSuccessor,
+	TPSFinished
+
+} TransitionParserState;
 
 Transition ClassicTransition(char c, State * target);
 Transition RangeTransition(char min, char max, State * target);
@@ -48,6 +71,7 @@ void DestroyState(State* s);
 void AddTransition(State * s, Transition t);
 bool Match(State * s, char * word, size_t cursor);
 
+ParsingBuffer InitParsingBuffer();
 void ClearParsingBuffer(ParsingBuffer *);
 void PushParsingBuffer(ParsingBuffer *, char);
 
@@ -55,5 +79,8 @@ Automaton LoadAutomaton(char*);
 void UnloadAutomaton(Automaton*);
 
 void SwitchState(AutomatonParserState*, AutomatonParserState, ParsingBuffer*);
+
+TransitionToken CreateTransitionToken(char*);
+void DestroyTransitionToken(TransitionToken*);
 
 #endif
