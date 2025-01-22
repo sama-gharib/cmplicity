@@ -6,7 +6,7 @@
 
 int main(int argc, char ** argv) {
 
-	/*if (argc != 4) {
+	if (argc != 4) {
 		printf("Usage : cmp ['automaton' | 'regex'] filepath word_to_test\n");
 
 		return EXIT_FAILURE;
@@ -61,7 +61,7 @@ int main(int argc, char ** argv) {
 
 	free(file_content);
 
-	return exit_code;*/
+	return exit_code;
 
 	/*
 	// Automaton Star test code
