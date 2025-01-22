@@ -78,6 +78,7 @@ void PushParsingBuffer(ParsingBuffer *, char);
 Automaton LoadAutomaton(char*);
 void UnloadAutomaton(Automaton*);
 Automaton AutomatonUnion(Automaton*, Automaton*);
+Automaton AutomatonConcatenation(Automaton*, Automaton*);
 
 void SwitchState(AutomatonParserState*, AutomatonParserState, ParsingBuffer*);
 

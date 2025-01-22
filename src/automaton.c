@@ -263,7 +263,6 @@ Automaton AutomatonUnion(Automaton * a, Automaton * b) {
 	// Creating new initial state
 	size_t successors_count = a->initial->successors.length + b->initial->successors.length;
 	State new_initial = {
-		// (Vector) {malloc(sizeof(Element) * successors_count), successors_count, successors_count},
 		CreateVector(),
 		a->initial->final || b->initial->final
 	};
@@ -271,11 +270,9 @@ Automaton AutomatonUnion(Automaton * a, Automaton * b) {
 	
 	// Adding transitions
 	for (size_t i = 0; i < a->initial->successors.length; i++) {
-		// new_initial.successors.content[i] = a->initial->successors.content[i];
 		PushVector(&new_initial.successors, a->initial->successors.content[i]);
 	}
 	for (size_t i = 0; i < b->initial->successors.length; i++) {
-		// new_initial.successors.content[i + a->initial->successors.length] = b->initial->successors.content[i];
 		PushVector(&new_initial.successors, b->initial->successors.content[i]);
 	}
 
@@ -283,18 +280,12 @@ Automaton AutomatonUnion(Automaton * a, Automaton * b) {
 	PushVector(&result.states, (Element) {&new_initial, sizeof(State)});
 
 	result.states.content = realloc(result.states.content, sizeof(Element) * new_length);
-	printf("a->states : ");
 	for (size_t i = 0; i < a->states.length; i++) {
-		printf("%p ", a->states.content[i].data);
 		result.states.content[i+1] = a->states.content[i];
 	}
-	printf("\n");
-	printf("b->states : ");
 	for (size_t i = 0; i < b->states.length; i++) {
-		printf("%p ", b->states.content[i].data);
 		result.states.content[i+a->states.length+1] = b->states.content[i];
 	}
-	printf("\n");
 	result.states.length = new_length;
 
 	result.initial = result.states.content[0].data;
@@ -309,6 +300,50 @@ Automaton AutomatonUnion(Automaton * a, Automaton * b) {
 
 	return result;
 }
+
+// Moves out a and b
+Automaton AutomatonConcatenation(Automaton * a, Automaton * b) {
+	
+	// Adding new transitions
+	for (size_t i = 0; i < a->states.length; i++) {
+		State * current = (State*) a->states.content[i].data;
+		if (current->final) {
+			current->final = false;
+			for (size_t j = 0; j < b->initial->successors.length; j++) {
+				PushVector(&current->successors, b->initial->successors.content[j]);
+			}
+		}
+	}
+
+	// Merging a and b into result
+	size_t new_length = a->states.length + b->states.length;
+	Automaton result = {
+		(Vector) {
+			malloc(sizeof(Element) * new_length),
+			new_length,
+			new_length
+		},
+		a->initial
+	};
+
+	for (size_t i = 0; i < a->states.length; i++) {
+		result.states.content[i] = a->states.content[i];
+	}
+	for (size_t i = 0; i < b->states.length; i++) {
+		result.states.content[i+a->states.length] = b->states.content[i];
+	}
+
+	// Cleaning out garbage
+	free(a->states.content);
+	free(b->states.content);
+	a->states.content = NULL;
+	b->states.content = NULL;
+	a->initial = NULL;
+	b->initial = NULL;
+
+	return result;
+}
+
 
 void SwitchState(AutomatonParserState* target, AutomatonParserState new_state, ParsingBuffer* buffer) {
 	*target = new_state;
