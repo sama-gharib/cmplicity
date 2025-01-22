@@ -79,6 +79,7 @@ Automaton LoadAutomaton(char*);
 void UnloadAutomaton(Automaton*);
 Automaton AutomatonUnion(Automaton*, Automaton*);
 Automaton AutomatonConcatenation(Automaton*, Automaton*);
+Automaton AutomatonStar(Automaton * a);
 
 void SwitchState(AutomatonParserState*, AutomatonParserState, ParsingBuffer*);
 

@@ -308,7 +308,7 @@ Automaton AutomatonConcatenation(Automaton * a, Automaton * b) {
 	for (size_t i = 0; i < a->states.length; i++) {
 		State * current = (State*) a->states.content[i].data;
 		if (current->final) {
-			current->final = false;
+			current->final = b->initial->final;
 			for (size_t j = 0; j < b->initial->successors.length; j++) {
 				PushVector(&current->successors, b->initial->successors.content[j]);
 			}
@@ -344,6 +344,37 @@ Automaton AutomatonConcatenation(Automaton * a, Automaton * b) {
 	return result;
 }
 
+// Moves out a
+Automaton AutomatonStar(Automaton * a) {
+	for (size_t i = 0; i < a->states.length; i++) {
+		State * state = (State*) a->states.content[i].data;
+		if (state->final) {
+			for (size_t j = 0; j < a->initial->successors.length; j++) {
+				PushVector(&state->successors, a->initial->successors.content[j]);
+			}
+		}
+	}
+
+	// Moving out a into result for safety concerns
+	Automaton result = {
+		(Vector) {
+			malloc(sizeof(Element) * a->states.length),
+			a->states.length,
+			a->states.length
+		},
+		a->initial
+	};
+	for (size_t i = 0; i < a->states.length; i++) {
+		result.states.content[i] = a->states.content[i];
+	}
+
+	// Cleaning leftovers
+	free(a->states.content);
+	a->states.content = NULL;
+	a->initial = NULL;
+
+	return result;
+}
 
 void SwitchState(AutomatonParserState* target, AutomatonParserState new_state, ParsingBuffer* buffer) {
 	*target = new_state;
