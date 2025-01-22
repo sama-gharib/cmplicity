@@ -13,6 +13,7 @@ Vector CreateVector() {
 }
 void DestroyVector(Vector * v) {
 	for (size_t i = 0; i < v->length; i++) {
+		printf("freeing : %p\n", v->content[i].data);
 		free(v->content[i].data);
 	}
 

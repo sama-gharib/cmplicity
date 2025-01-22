@@ -62,4 +62,50 @@ int main(int argc, char ** argv) {
 	free(file_content);
 
 	return exit_code;
+
+	/*
+	// Automaton Union test code
+	Automaton nbr = LoadAutomaton("\
+States: Sign, FirstDigitAfterSign, IntegerPart, FloatPart;\
+Finals: IntegerPart, FloatPart;\
+Initial: Sign;\
+Transitions:\
+    (Sign, +, FirstDigitAfterSign),\
+    (Sign, -, FirstDigitAfterSign),\
+    (FirstDigitAfterSign, [0-9], IntegerPart),\
+    (Sign, [0-9], IntegerPart),\
+    (IntegerPart, [0-9], IntegerPart),\
+    (IntegerPart, ., FloatPart),\
+    (FloatPart, [0-9], FloatPart);\
+\
+");
+	Automaton quote = LoadAutomaton("\
+States: OpeningQuote, Content, ClosingQuote;\
+Finals: ClosingQuote;\
+Initial: OpeningQuote;\
+Transitions:\
+	(OpeningQuote, \", Content),\
+	(Content, [a-z], Content),\
+	(Content, \", ClosingQuote);\
+");
+	Automaton value = AutomatonUnion(&nbr, &quote);
+
+	bool matches[] = {
+		Match(value.initial, "123.145", 0),
+		Match(value.initial, "\"hello\"", 0),
+		Match(value.initial, "yooo", 0)
+	};
+
+	printf("value.states : ");
+	for(size_t i = 0; i < value.states.length; i++) {
+		printf("%p ", value.states.content[i].data);
+	}
+	printf("\n");
+
+	UnloadAutomaton(&value);
+
+	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
+
+	return EXIT_SUCCESS;
+	*/
 }
