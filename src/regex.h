@@ -10,6 +10,7 @@ typedef enum {
 	RNTConcatRight,
 	RNTRepeater,
 	RNTRepeaterRight,
+	RNTRepeaterSym,
 	RNTUnit,
 	RNTRange,
 	RNTWord,
@@ -50,12 +51,11 @@ typedef enum {
         RNTUpper: RTRAngeTo RTLetter | RTLetter RNTWord
         RNTWord: RTLetter RNTWord | RTEmpty
         RNTNegation: RTNegation | RTEmpty
-
         
 */
 
 
-Automate CompileRegex(char *);
+Automaton CompileRegex(char *);
 
 
 #endif
