@@ -8,31 +8,50 @@ typedef enum {
 	RNTUnionRight,
 	RNTConcat,
 	RNTConcatRight,
-	RNTStar,
-	RNTStarRight,
-	RNTUnit
+	RNTRepeater,
+	RNTRepeaterRight,
+	RNTUnit,
+	RNTRange,
+	RNTWord,
+	RNTNegation
 
 } RegexNonTerminal;
 
 typedef enum {
-	RTUnion,
-	RTConcatenation,
 	RTStar,
+	RTPlus,
+	RTOption,
+	RTAny,
+	RTOpen,
+	RTClose,
+	RTOpenBracket,
+	RTOpenBrackt,
+	RTUnion,
+	RTRangeTo,
+	RTNegation,
+	RTEmpty,
 	RTLetter,
-	RTEmpty
+	RTEnd
 
 } RegexTerminal;
 
 
 /*
-    # LL(1) Regex Grammar :
+    # LL(1) Extended Regex Grammar :
         RNTUnion: RNTConcat RNTUnionRight | RTEmpty
-        RNTUnionRight: RTUnion RNTConcat | RTEmpty
-        RNTConcat: RNTStar RNTConcatRight
-        RNTConcatRight: RTConcatenation RNTStar | RTEmpty
-        RNTStar: RNTUnit RNTStarRight
-        RNTStarRight: RTStar | RTEmpty
-        RNTUnit: '(' RNTUnion ')' | RTLetter
+        RNTUnionRight: RTUnion RNTConcat RNTUnionRight | RTEmpty
+        RNTConcat: RNTRepeater RNTConcatRight
+        RNTConcatRight: RNTRepeater RNTConcatRight | RTEmpty
+        RNTRepeater: RTUnit RNTRepeaterRight
+        RNTRepeaterRight: RNTRepeaterSym RNTRepeaterRight | RTEmpty
+        RNTRepeaterSym: RTStar | RTPlus | RTOption
+        RNTUnit: RTLetter | RTOpen RNTUnion RTClose | RNTRange | RTAny
+        RNTRange: RTOpenBracket RNTNegation RTLetter RNTUpper RTCloseBracket
+        RNTUpper: RTRAngeTo RTLetter | RTLetter RNTWord
+        RNTWord: RTLetter RNTWord | RTEmpty
+        RNTNegation: RTNegation | RTEmpty
+
+        
 */
 
 
