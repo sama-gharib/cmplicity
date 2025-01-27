@@ -245,6 +245,15 @@ Automaton LoadAutomaton(char * src) {
 
 	return result;
 }
+Automaton DefaultAutomaton() {
+	return LoadAutomaton("
+		States: s;
+		Initial: s;
+		Finals: ;
+		Transitions: ;
+	");
+}
+
 void UnloadAutomaton(Automaton * a) {
 	for (size_t i = 0; i < a->states.length; i++) {
 		DestroyState(a->states.content[i].data);

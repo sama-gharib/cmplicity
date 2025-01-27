@@ -36,6 +36,28 @@ typedef enum {
 
 } RegexTerminal;
 
+typedef enum {
+	OTStar,
+	OTPlus,
+	OTOption,
+	OTConcatenation,
+	OTUnion,
+	OTNone
+
+} OperationType;
+
+typedef struct {
+	OperationType type;
+	Automaton on;
+
+} OperationOrder;
+
+
+typedef enum {
+	TrueRange,
+	Enumeration
+
+} RangeType;
 
 /*
     # LL(1) Extended Regex Grammar :
@@ -57,5 +79,19 @@ typedef enum {
 
 Automaton CompileRegex(char *);
 
+// All of the following constitute the
+// Regex LL(1) recursive parser
+Automaton ParserUnion(char *, size_t *);
+OperationOrder ParserUnionRight(char *, size_t *);
+Automaton ParserConcat(char *, size_t *);
+OperationOrder ParserConcatRight(char *, size_t *);
+Automaton ParserRepeater(char *, size_t *);
+OperationOrder ParserRepeaterRight(char *, size_t *);
+OperationType ParserRepeaterSym(char *, size_t *);
+Automaton ParserUnit(char *, size_t *);
+Automaton ParserRange(char *, size_t *);
+RangeType ParserUpper(char *, size_t *);
+void ParserWord(char *, size_t *);
+bool ParserNegation(char *, size_t *);
 
 #endif

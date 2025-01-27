@@ -5,7 +5,7 @@
 #include <string.h>
 
 int main(int argc, char ** argv) {
-	/*
+	
 	if (argc != 4) {
 		printf("Usage : cmp ['automaton' | 'regex'] filepath word_to_test\n");
 
@@ -62,9 +62,9 @@ int main(int argc, char ** argv) {
 	free(file_content);
 
 	return exit_code;
-	*/
-
 	
+
+	/*
 	// Automaton Star test code
 	Automaton quote = LoadAutomaton("\
 States: OpeningQuote, Content, ClosingQuote;\
@@ -89,7 +89,7 @@ Transitions:\
 	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
 
 	return EXIT_SUCCESS;
-	
+	*/
 
 	/*
 	// Automaton Union test code
