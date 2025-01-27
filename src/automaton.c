@@ -348,7 +348,7 @@ Automaton AutomatonConcatenation(Automaton * a, Automaton * b) {
 Automaton AutomatonStar(Automaton * a) {
 	for (size_t i = 0; i < a->states.length; i++) {
 		State * state = (State*) a->states.content[i].data;
-		if (state->final) {
+		if (state->final && state != a->initial) {
 			for (size_t j = 0; j < a->initial->successors.length; j++) {
 				PushVector(&state->successors, a->initial->successors.content[j]);
 			}
@@ -375,6 +375,99 @@ Automaton AutomatonStar(Automaton * a) {
 
 	return result;
 }
+
+// Moves out a
+Automaton AutomatonPlus(Automaton * a) {
+	// Copying a into b
+	Automaton b = {
+		CreateVector(),
+		NULL
+	};
+
+	// Adding states
+	for (size_t i = 0; i < a->states.length; i++) {
+		State * current_state = (State*) a->states.content[i].data;
+		State s = CreateState(current_state->final);
+		// No need to destroy s since its vector is
+		// moved.
+		PushVector(&b.states, (Element) {
+			&s,
+			sizeof(State)
+		});
+		if (a->initial == current_state) {
+			b.initial = b.states.content[i].data;
+		}
+	}
+
+	// Copying transitions
+	for (size_t i = 0; i < a->states.length; i++) {
+		State * current_state = (State*) a->states.content[i].data;
+		for (size_t j = 0; j < current_state->successors.length; j++) {
+			Transition * current_transition = (Transition*) current_state->successors.content[j].data;
+			for (size_t k = 0; k < a->states.length; k++) {
+				State * current_target = (State*) a->states.content[k].data;
+				if (current_target == current_transition->target) {
+					AddTransition(
+						(State*) b.states.content[i].data,
+						(Transition) {
+							current_transition->min,
+							current_transition->max,
+							b.states.content[k].data
+						}
+					);
+				}
+			}
+		}
+	}
+
+	b.initial->final = true;
+
+	Automaton starred_b = AutomatonStar(&b);
+
+	Automaton result = AutomatonConcatenation(a, &starred_b);
+
+	// No need to free b, a nor starred_b operations
+	// on automatons use the move semantic.
+
+	return result;
+}
+
+Automaton AutomatonOption(Automaton * a) {
+	
+	State s = CreateState(true);
+	PushVector(&a->states, (Element) {
+		&s,
+		sizeof(State)
+	});
+	// No need to destroy s since its vector value is
+	// moved out
+
+	State * last_state = (State*) a->states.content[a->states.length-1].data;
+	for (size_t j = 0; j < a->initial->successors.length; j++) {
+		PushVector(&last_state->successors, a->initial->successors.content[j]);
+	}
+
+	// Moving out a into result for safety concerns
+	Automaton result = {
+		(Vector) {
+			malloc(sizeof(Element) * a->states.length),
+			a->states.length,
+			a->states.length
+		},
+		last_state
+	};
+	for (size_t i = 0; i < a->states.length; i++) {
+		result.states.content[i] = a->states.content[i];
+	}
+
+	// Cleaning leftovers
+	free(a->states.content);
+	a->states.content = NULL;
+	a->initial = NULL;
+
+	return result;
+}
+
 
 void SwitchState(AutomatonParserState* target, AutomatonParserState new_state, ParsingBuffer* buffer) {
 	*target = new_state;

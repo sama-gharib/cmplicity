@@ -80,6 +80,8 @@ void UnloadAutomaton(Automaton*);
 Automaton AutomatonUnion(Automaton*, Automaton*);
 Automaton AutomatonConcatenation(Automaton*, Automaton*);
 Automaton AutomatonStar(Automaton * a);
+Automaton AutomatonPlus(Automaton * a);
+Automaton AutomatonOption(Automaton * a);
 
 void SwitchState(AutomatonParserState*, AutomatonParserState, ParsingBuffer*);
 
