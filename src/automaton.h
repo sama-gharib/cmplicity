@@ -77,6 +77,7 @@ void PushParsingBuffer(ParsingBuffer *, char);
 
 Automaton LoadAutomaton(char*);
 Automaton DefaultAutomaton();
+Automaton SingleLetterAutomaton(char);
 void UnloadAutomaton(Automaton*);
 Automaton AutomatonUnion(Automaton*, Automaton*);
 Automaton AutomatonConcatenation(Automaton*, Automaton*);

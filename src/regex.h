@@ -47,7 +47,7 @@ typedef enum {
 	OTStar,
 	OTPlus,
 	OTOption,
-	OTConcatenation,
+	OTConcat,
 	OTUnion,
 	OTNone
 
@@ -90,13 +90,12 @@ RegexToken * TokenizeRegex(char *);
 
 // All of the following constitute the
 // Regex LL(1) recursive parser
-Automaton ParserUnion(RegexToken *, size_t *);
+Automaton ParserUnion(RegexToken *, size_t *, bool);
 OperationOrder ParserUnionRight(RegexToken *, size_t *);
 Automaton ParserConcat(RegexToken *, size_t *);
 OperationOrder ParserConcatRight(RegexToken *, size_t *);
 Automaton ParserRepeater(RegexToken *, size_t *);
 OperationOrder ParserRepeaterRight(RegexToken *, size_t *);
-OperationType ParserRepeaterSym(RegexToken *, size_t *);
 Automaton ParserUnit(RegexToken *, size_t *);
 Automaton ParserRange(RegexToken *, size_t *);
 RangeType ParserUpper(RegexToken *, size_t *);

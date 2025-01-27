@@ -253,6 +253,23 @@ Automaton DefaultAutomaton() {
 		Transitions: ;
 	");
 }
+Automaton SingleLetterAutomaton(char min, char max) {
+	Automaton l = DefaultAutomaton();
+
+	l.initial->final = false;
+	State new_state = CreateState(true);
+	PushVector(&l.states, (Element) {&new_state, sizeof(State)});
+	AddTransition(
+		l.initial,
+		(Transition) {
+			min,
+			max,
+			l.states.content[1].data
+		}
+	);
+
+	return l;
+}
 
 void UnloadAutomaton(Automaton * a) {
 	for (size_t i = 0; i < a->states.length; i++) {
