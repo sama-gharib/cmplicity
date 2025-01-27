@@ -26,7 +26,7 @@ typedef enum {
 	RTOpen,
 	RTClose,
 	RTOpenBracket,
-	RTOpenBrackt,
+	RTCloseBracket,
 	RTUnion,
 	RTRangeTo,
 	RTNegation,
@@ -35,6 +35,13 @@ typedef enum {
 	RTEnd
 
 } RegexTerminal;
+
+typedef struct {
+	bool is_letter;
+	RegexTerminal terminal;
+	char symbol;
+
+} RegexToken;
 
 typedef enum {
 	OTStar,
@@ -79,19 +86,21 @@ typedef enum {
 
 Automaton CompileRegex(char *);
 
+RegexToken * TokenizeRegex(char *);
+
 // All of the following constitute the
 // Regex LL(1) recursive parser
-Automaton ParserUnion(char *, size_t *);
-OperationOrder ParserUnionRight(char *, size_t *);
-Automaton ParserConcat(char *, size_t *);
-OperationOrder ParserConcatRight(char *, size_t *);
-Automaton ParserRepeater(char *, size_t *);
-OperationOrder ParserRepeaterRight(char *, size_t *);
-OperationType ParserRepeaterSym(char *, size_t *);
-Automaton ParserUnit(char *, size_t *);
-Automaton ParserRange(char *, size_t *);
-RangeType ParserUpper(char *, size_t *);
-void ParserWord(char *, size_t *);
-bool ParserNegation(char *, size_t *);
+Automaton ParserUnion(RegexToken *, size_t *);
+OperationOrder ParserUnionRight(RegexToken *, size_t *);
+Automaton ParserConcat(RegexToken *, size_t *);
+OperationOrder ParserConcatRight(RegexToken *, size_t *);
+Automaton ParserRepeater(RegexToken *, size_t *);
+OperationOrder ParserRepeaterRight(RegexToken *, size_t *);
+OperationType ParserRepeaterSym(RegexToken *, size_t *);
+Automaton ParserUnit(RegexToken *, size_t *);
+Automaton ParserRange(RegexToken *, size_t *);
+RangeType ParserUpper(RegexToken *, size_t *);
+void ParserWord(RegexToken *, size_t *);
+bool ParserNegation(RegexToken *, size_t *);
 
 #endif
