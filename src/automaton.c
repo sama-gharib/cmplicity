@@ -246,11 +246,11 @@ Automaton LoadAutomaton(char * src) {
 	return result;
 }
 Automaton DefaultAutomaton() {
-	return LoadAutomaton("
-		States: s;
-		Initial: s;
-		Finals: ;
-		Transitions: ;
+	return LoadAutomaton("\
+		States: s;\
+		Initial: s;\
+		Finals: ;\
+		Transitions: ;\
 	");
 }
 Automaton SingleLetterAutomaton(char min, char max) {
@@ -334,8 +334,8 @@ Automaton AutomatonConcatenation(Automaton * a, Automaton * b) {
 	for (size_t i = 0; i < a->states.length; i++) {
 		State * current = (State*) a->states.content[i].data;
 		if (current->final) {
-			current->final = b->initial->final;
 			for (size_t j = 0; j < b->initial->successors.length; j++) {
+				current->final = b->initial->final;
 				PushVector(&current->successors, b->initial->successors.content[j]);
 			}
 		}
