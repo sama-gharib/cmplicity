@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
 	// Regex testing code
 
 	printf("Compiling regex...\n");
-	Automaton test = CompileRegex("(a|b)*");
+	Automaton test = CompileRegex("[a-z]*\\.[a-z]*(@(gmail\\.com|outlook\\.fr))?");
 	printf("Regex compiled !\n");
 
 	printf("Initial : %p\n", test.initial);
@@ -86,9 +86,9 @@ int main(int argc, char ** argv) {
 	}
 
 	bool matches[] = {
-		Match(test.initial, "a", 0),
-		Match(test.initial, "b", 0),
-		Match(test.initial, "aaaaaab", 0)
+		Match(test.initial, "sama.gharib", 0),
+		Match(test.initial, "sama.gharib@gmail.com", 0),
+		Match(test.initial, "sama.gharib@", 0)
 	};
 
 	UnloadAutomaton(&test);
