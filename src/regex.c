@@ -455,6 +455,7 @@ Automaton ParserUnit(RegexToken * src, size_t * ind) {
 	} else if(t.terminal == RTLetter) {
 		return SingleLetterAutomaton(t.symbol, t.symbol);
 	} else if (t.terminal == RTOpenBracket) {
+		(*ind) --;
 		return ParserRange(src, ind);
 	} else if (t.terminal == RTAny) {
 		return SingleLetterAutomaton(' ', '~');
@@ -486,9 +487,10 @@ Automaton ParserRange(RegexToken * src, size_t * ind) {
 				}
 			}
 
-			if (src[*ind].terminal != ']') {
+			if (src[*ind].terminal != RTCloseBracket) {
 				fprintf(stderr, "Expected ']', found '%c'\n", src[*ind].symbol);
 			}
+			(*ind) ++;
 
 			return result;
 		}
