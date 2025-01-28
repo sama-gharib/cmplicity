@@ -219,13 +219,13 @@ Automaton ParserUnion(RegexToken * src, size_t * ind, bool allow_epsilon) {
 			UnloadAutomaton(&right.on);
 			return left;
 		}
-	} else if (allow_epsilon &&
+	} else if (//allow_epsilon &&
 		(	
 		t.terminal == RTClose
 	 || t.terminal == RTEnd)) {
 		return DefaultAutomaton();
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "Union Error: Unexpected token: %c\n", t.symbol);
 		// TODO: Better error handling please
 		return DefaultAutomaton();
 	}
@@ -255,7 +255,7 @@ OperationOrder ParserUnionRight(RegexToken * src, size_t * ind) {
 			DefaultAutomaton()
 		};
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "UnionRight Error: Unexpected token: %c\n", t.symbol);
 		return (OperationOrder) {
 			OTNone,
 			DefaultAutomaton()
@@ -280,14 +280,11 @@ Automaton ParserConcat(RegexToken * src, size_t * ind) {
 
 			return c;
 		} else {
-			printf("Received OTNone.\n");
-			printf("laoe: %p : %d\n", left.initial, Match(left.initial, "aaab", 0));
-			printf("Passed.\n");
 			UnloadAutomaton(&right.on);
 			return left;
 		}
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "Concat Error: Unexpected token: %c\n", t.symbol);
 		// TODO: Better error handling please
 		return DefaultAutomaton();
 	}
@@ -305,13 +302,9 @@ OperationOrder ParserConcatRight(RegexToken * src, size_t * ind) {
 	 || t.terminal == RTOpenBracket
 	 || t.terminal == RTAny
 	) {
-		printf("ConcatRight calls Concat\n");
 		Automaton n = ParserConcat(src, ind);
-		printf("ConcatRight.Concat finished\n");
 
-		printf("Crash here :\n");
 		Match(n.initial, "b", 0);
-		printf("Plu d'idée..\n");
 
 		return (OperationOrder) {
 			OTConcat,
@@ -320,19 +313,16 @@ OperationOrder ParserConcatRight(RegexToken * src, size_t * ind) {
 	} else if (
 		t.terminal == RTClose
 	 || t.terminal == RTEnd
-	 || t.terminal == OTUnion
+	 || t.terminal == RTUnion
 	 ) {
-	 	printf("Returning default automaton...\n");
 		OperationOrder order = (OperationOrder) {
 			OTNone,
 			DefaultAutomaton()
 		};
 
-		printf("ConcatRight returning : %p\n", order.on.initial);
-
 		return order;
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "ConcatRight Error: Unexpected token: %c\n", t.symbol);
 		return (OperationOrder) {
 			OTNone,
 			DefaultAutomaton()
@@ -350,13 +340,7 @@ Automaton ParserRepeater(RegexToken * src, size_t * ind) {
 	 || t.terminal == RTAny ) {
 		Automaton left = ParserUnit(src, ind);
 		
-		printf("Call to repeater right\n");
 		OperationOrder right = ParserRepeaterRight(src, ind);
-		printf("Finished call to repeater right\n");
-
-		printf("LEFT: %d\n", Match(left.initial, "b", 0));
-		printf("Right is %p\n", right.on.initial);
-		printf("RIGHT: %d\n", Match(right.on.initial, "aa", 0));
 
 		UnloadAutomaton(&right.on);
 
@@ -371,7 +355,7 @@ Automaton ParserRepeater(RegexToken * src, size_t * ind) {
 		}
 
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "Repeater Error: Unexpected token: %c\n", t.symbol);
 		// TODO: Better error handling please
 		return DefaultAutomaton();
 	}
@@ -400,9 +384,7 @@ OperationOrder ParserRepeaterRight(RegexToken * src, size_t * ind) {
 		}
 
 		Automaton n = {0};
-		printf("RECURSIVE Call to repeater right\n");
 		OperationOrder oo = ParserRepeaterRight(src, ind);
-		printf("FINISHED RECURSIVE Call to repeater right\n");
 		if (oo.type != OTNone) {
 			if (oo.type == OTStar) {
 				n = AutomatonStar(&oo.on);
@@ -426,16 +408,15 @@ OperationOrder ParserRepeaterRight(RegexToken * src, size_t * ind) {
 	 || t.terminal == RTOpenBracket
 	 || t.terminal == RTAny
 	 || t.terminal == RTEnd
-	 || t.terminal == OTUnion
+	 || t.terminal == RTUnion
 	 ) {
 	 	Automaton on = DefaultAutomaton();
-		printf("%p : %d\n", on.initial, Match(on.initial, "bb", 0));
 		return (OperationOrder) {
 			OTNone,
 			on
 		};
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "RepeaterRight Error: Unexpected token: %c\n", t.symbol);
 		return (OperationOrder) {
 			OTNone,
 			DefaultAutomaton()
@@ -451,7 +432,9 @@ Automaton ParserUnit(RegexToken * src, size_t * ind) {
 	(*ind) ++;
 
 	if (t.terminal == RTOpen) {
-		return ParserUnion(src, ind, true);
+		Automaton u = ParserUnion(src, ind, true);
+		(*ind) ++;
+		return u;
 	} else if(t.terminal == RTLetter) {
 		return SingleLetterAutomaton(t.symbol, t.symbol);
 	} else if (t.terminal == RTOpenBracket) {
@@ -460,7 +443,7 @@ Automaton ParserUnit(RegexToken * src, size_t * ind) {
 	} else if (t.terminal == RTAny) {
 		return SingleLetterAutomaton(' ', '~');
 	} else {
-		fprintf(stderr, "Error: Unexpected token: %c\n", t.symbol);
+		fprintf(stderr, "Unit Error: Unexpected token: %c\n", t.symbol);
 		return DefaultAutomaton();
 	}
 }

@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
 	// Regex testing code
 
 	printf("Compiling regex...\n");
-	Automaton test = CompileRegex("[0-9]*\\.[0-9]*");
+	Automaton test = CompileRegex("(a|b)*");
 	printf("Regex compiled !\n");
 
 	printf("Initial : %p\n", test.initial);
@@ -86,9 +86,9 @@ int main(int argc, char ** argv) {
 	}
 
 	bool matches[] = {
-		Match(test.initial, "1665.12.3", 0),
-		Match(test.initial, "313.6584", 0),
-		Match(test.initial, "0343", 0)
+		Match(test.initial, "a", 0),
+		Match(test.initial, "b", 0),
+		Match(test.initial, "aaaaaab", 0)
 	};
 
 	UnloadAutomaton(&test);
