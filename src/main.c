@@ -6,7 +6,6 @@
 #include <string.h>
 
 int main(int argc, char ** argv) {
-	
 
 	if (argc != 4) {
 		printf("Usage : cmp ['automaton' filepath | 'regex' your_regex] word_to_test\n");

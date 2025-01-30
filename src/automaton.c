@@ -390,6 +390,8 @@ Automaton AutomatonStar(Automaton * a) {
 		},
 		a->initial
 	};
+	result.initial->final = true;
+
 	for (size_t i = 0; i < a->states.length; i++) {
 		result.states.content[i] = a->states.content[i];
 	}
