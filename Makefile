@@ -1,4 +1,4 @@
-example: examples/number.atm
+examples: examples/number.atm
 	@echo "=== Testing the automaton that recognize numbers ==="
 	@./cmp automaton examples/number.atm 123.545
 	@./cmp automaton examples/number.atm +12
@@ -6,6 +6,14 @@ example: examples/number.atm
 	@./cmp automaton examples/number.atm -41.6
 	@./cmp automaton examples/number.atm -
 	@./cmp automaton examples/number.atm coucou
+	@echo ""
+	@echo ""
+	@echo "=== Testing the regex that recognizes time ==="
+	@./cmp regex "((1|0)[0-9]|2[0-3])(:|h)[0-5][0-9](('|m)[0-5][0-9](''|s))?" "23:43'12''"
+	@./cmp regex "((1|0)[0-9]|2[0-3])(:|h)[0-5][0-9](('|m)[0-5][0-9](''|s))?" "14:05'81''"
+	@./cmp regex "((1|0)[0-9]|2[0-3])(:|h)[0-5][0-9](('|m)[0-5][0-9](''|s))?" "12:01"
+	@./cmp regex "((1|0)[0-9]|2[0-3])(:|h)[0-5][0-9](('|m)[0-5][0-9](''|s))?" "56:30"
+	@./cmp regex "((1|0)[0-9]|2[0-3])(:|h)[0-5][0-9](('|m)[0-5][0-9](''|s))?" "03h16m20s"
 
 examples/number.atm: cmp
 	@mkdir -p examples
