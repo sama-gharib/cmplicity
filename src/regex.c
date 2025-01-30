@@ -41,9 +41,6 @@ Automaton CompileRegex(char * src) {
 			case RTRangeTo:
 				printf("-");
 			break;
-			case RTNegation:
-				printf("^");
-			break;
 			case RTEmpty:
 				printf("Empty");
 			break;
@@ -156,13 +153,6 @@ RegexToken * TokenizeRegex(char * src) {
 						'-'
 					};
 				break;
-				case '^':
-					token_array[lag] = (RegexToken) {
-						false,
-						RTNegation,
-						'^'
-					};
-				break;
 				case '?':
 					token_array[lag] = (RegexToken) {
 						false,
@@ -178,6 +168,10 @@ RegexToken * TokenizeRegex(char * src) {
 					};
 				break;
 				default:
+
+					if (c=='^') {
+						fprintf(stderr, "/!\\ WARNING: Range negation is not supported, interpreting '^' as a normal character. /!\\\n");
+					}
 					token_array[lag] = (RegexToken) {
 						true,
 						RTLetter,
@@ -390,10 +384,11 @@ OperationOrder ParserRepeaterRight(RegexToken * src, size_t * ind) {
 				n = AutomatonStar(&oo.on);
 			} else if (oo.type == OTPlus) {
 				n = AutomatonPlus(&oo.on);
-			}else if (oo.type == OTStar) {
+			} else if (oo.type == OTStar) {
 				n = AutomatonOption(&oo.on);
 			}
 		} else {
+			UnloadAutomaton(&oo.on);
 			n = DefaultAutomaton();
 		}
 
@@ -455,7 +450,6 @@ Automaton ParserRange(RegexToken * src, size_t * ind) {
 	if (t.terminal == RTOpenBracket) {
 		size_t first_ind = *ind;
 		(*ind) ++;
-		bool negation = ParserNegation(src, ind);
 		if (src[*ind].is_letter) {
 			(*ind) ++;
 			RangeType rt = ParserUpper(src, ind);
@@ -510,22 +504,6 @@ void ParserWord(RegexToken * src, size_t * ind) {
 		(*ind) ++;
 		ParserWord(src, ind);
 	} else if (t.terminal == RTCloseBracket) {
-		fprintf(stderr, "Unexpected character : '%c'\n", t.symbol);		
-	}
-}
-bool ParserNegation(RegexToken * src, size_t * ind) {
-	printf("\t\tNegation, cursor = %llu\n", *ind);
-	
-
-	RegexToken t = src[*ind];
-
-	if (t.terminal == RTNegation) {
-		(*ind) ++;
-		fprintf(stderr, "Range negation not yet implemented !\n", t.symbol);		
-		return true;
-	} else if (t.is_letter) {
-		return false;
-	} else {
 		fprintf(stderr, "Unexpected character : '%c'\n", t.symbol);		
 	}
 }

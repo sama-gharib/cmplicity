@@ -13,8 +13,7 @@ typedef enum {
 	RNTRepeaterSym,
 	RNTUnit,
 	RNTRange,
-	RNTWord,
-	RNTNegation
+	RNTWord
 
 } RegexNonTerminal;
 
@@ -29,7 +28,6 @@ typedef enum {
 	RTCloseBracket,
 	RTUnion,
 	RTRangeTo,
-	RTNegation,
 	RTEmpty,
 	RTLetter,
 	RTEnd
@@ -76,10 +74,9 @@ typedef enum {
         RNTRepeaterRight: RNTRepeaterSym RNTRepeaterRight | RTEmpty
         RNTRepeaterSym: RTStar | RTPlus | RTOption
         RNTUnit: RTLetter | RTOpen RNTUnion RTClose | RNTRange | RTAny
-        RNTRange: RTOpenBracket RNTNegation RTLetter RNTUpper RTCloseBracket
+        RNTRange: RTOpenBracket RTLetter RNTUpper RTCloseBracket
         RNTUpper: RTRAngeTo RTLetter | RTLetter RNTWord
         RNTWord: RTLetter RNTWord | RTEmpty
-        RNTNegation: RTNegation | RTEmpty
         
 */
 
@@ -100,6 +97,5 @@ Automaton ParserUnit(RegexToken *, size_t *);
 Automaton ParserRange(RegexToken *, size_t *);
 RangeType ParserUpper(RegexToken *, size_t *);
 void ParserWord(RegexToken *, size_t *);
-bool ParserNegation(RegexToken *, size_t *);
 
 #endif
