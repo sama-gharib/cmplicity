@@ -4,64 +4,64 @@
 
 Automaton CompileRegex(char * src) {
 
-	printf("\tTokenization...\n");
+	//printf("\tTokenization...\n");
 	RegexToken * tokens = TokenizeRegex(src);
 	size_t i = 0;
-	printf("'");
+	//printf("'");
 	while (tokens[i].terminal != RTEnd) {
 		char * to_print;
 		switch (tokens[i].terminal) {
 			case RTStar:
-				printf("*");
+				//printf("*");
 			break;
 			case RTPlus:
-				printf("+");
+				//printf("+");
 			break;
 			case RTOption:
-				printf("?");
+				//printf("?");
 			break;
 			case RTAny:
-				printf(".");
+				//printf(".");
 			break;
 			case RTOpen:
-				printf("(");
+				//printf("(");
 			break;
 			case RTClose:
-				printf(")");
+				//printf(")");
 			break;
 			case RTOpenBracket:
-				printf("[");
+				//printf("[");
 			break;
 			case RTCloseBracket:
-				printf("]");
+				//printf("]");
 			break;
 			case RTUnion:
-				printf("|");
+				//printf("|");
 			break;
 			case RTRangeTo:
-				printf("-");
+				//printf("-");
 			break;
 			case RTEmpty:
-				printf("Empty");
+				//printf("Empty");
 			break;
 			case RTLetter:
-				printf("\\%c", tokens[i].symbol);
+				//printf("\\%c", tokens[i].symbol);
 			break;
 			case RTEnd:
-				printf("$");
+				//printf("$");
 			break;
 		}
 
 		i++;
 	}
 
-	printf("'\n\tDone.\n");
+	//printf("'\n\tDone.\n");
 
 	size_t cursor = 0;
 
-	printf("\tBuilding automaton for '%s'...\n", src);
+	//printf("\tBuilding automaton for '%s'...\n", src);
 	Automaton result = ParserUnion(tokens, &cursor, true);
-	printf("\tDone.\n");
+	//printf("\tDone.\n");
 
 	free(tokens);
 
@@ -197,7 +197,7 @@ RegexToken * TokenizeRegex(char * src) {
 // All of the following constitute the
 // Regex LL(1) recursive parser
 Automaton ParserUnion(RegexToken * src, size_t * ind, bool allow_epsilon) {
-	printf("\t\tUnion, cursor = %llu\n", *ind);
+	//printf("\t\tUnion, cursor = %llu\n", *ind);
 
 	RegexToken t = src[*ind];
 
@@ -226,7 +226,7 @@ Automaton ParserUnion(RegexToken * src, size_t * ind, bool allow_epsilon) {
 
 }
 OperationOrder ParserUnionRight(RegexToken * src, size_t * ind) {
-	printf("\t\tUnionRight, cursor = %llu\n", *ind);
+	//printf("\t\tUnionRight, cursor = %llu\n", *ind);
 
 
 	RegexToken t = src[*ind];
@@ -257,7 +257,7 @@ OperationOrder ParserUnionRight(RegexToken * src, size_t * ind) {
 	}
 }
 Automaton ParserConcat(RegexToken * src, size_t * ind) {
-	printf("\t\tConcat, cursor = %llu\n", *ind);
+	//printf("\t\tConcat, cursor = %llu\n", *ind);
 
 
 	RegexToken t = src[*ind];
@@ -285,7 +285,7 @@ Automaton ParserConcat(RegexToken * src, size_t * ind) {
 
 }
 OperationOrder ParserConcatRight(RegexToken * src, size_t * ind) {
-	printf("\t\tConcatRight, cursor = %llu\n", *ind);
+	//printf("\t\tConcatRight, cursor = %llu\n", *ind);
 
 
 	RegexToken t = src[*ind];
@@ -324,7 +324,7 @@ OperationOrder ParserConcatRight(RegexToken * src, size_t * ind) {
 	}
 }
 Automaton ParserRepeater(RegexToken * src, size_t * ind) {
-	printf("\t\tRepeater, cursor = %llu\n", *ind);
+	//printf("\t\tRepeater, cursor = %llu\n", *ind);
 
 	RegexToken t = src[*ind];
 
@@ -356,7 +356,7 @@ Automaton ParserRepeater(RegexToken * src, size_t * ind) {
 
 }
 OperationOrder ParserRepeaterRight(RegexToken * src, size_t * ind) {
-	printf("\t\tRepeaterRight, cursor = %llu\n", *ind);
+	//printf("\t\tRepeaterRight, cursor = %llu\n", *ind);
 
 	RegexToken t = src[*ind];
 
@@ -420,7 +420,7 @@ OperationOrder ParserRepeaterRight(RegexToken * src, size_t * ind) {
 }
 
 Automaton ParserUnit(RegexToken * src, size_t * ind) {
-	printf("\t\tUnit, cursor = %llu\n", *ind);
+	//printf("\t\tUnit, cursor = %llu\n", *ind);
 
 	RegexToken t = src[*ind];
 
@@ -443,7 +443,7 @@ Automaton ParserUnit(RegexToken * src, size_t * ind) {
 	}
 }
 Automaton ParserRange(RegexToken * src, size_t * ind) {
-	printf("\t\tRange, cursor = %llu\n", *ind);
+	//printf("\t\tRange, cursor = %llu\n", *ind);
 	
 	RegexToken t = src[*ind];	
 
@@ -477,7 +477,7 @@ Automaton ParserRange(RegexToken * src, size_t * ind) {
 	}
 }
 RangeType ParserUpper(RegexToken * src, size_t * ind) {
-	printf("\t\tUpper, cursor = %llu\n", *ind);
+	//printf("\t\tUpper, cursor = %llu\n", *ind);
 
 
 	RegexToken t = src[*ind];
@@ -495,7 +495,7 @@ RangeType ParserUpper(RegexToken * src, size_t * ind) {
 	}
 }
 void ParserWord(RegexToken * src, size_t * ind) {
-	printf("\t\tWord, cursor = %llu\n", *ind);
+	//printf("\t\tWord, cursor = %llu\n", *ind);
 	
 
 	RegexToken t = src[*ind];
