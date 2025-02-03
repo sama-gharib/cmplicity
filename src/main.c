@@ -1,5 +1,6 @@
 #include "automaton.h"
 #include "regex.h"
+#include "lexing.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 int main(int argc, char ** argv) {
 
 	if (argc != 4) {
-		printf("Usage : cmp ['automaton' filepath | 'regex' your_regex] word_to_test\n");
+		printf("Usage : cmp ['automaton' filepath | 'regex' your_regex | 'lexing' regex_file code_file] word_to_test\n");
 
 		return EXIT_FAILURE;
 	}
@@ -66,6 +67,12 @@ int main(int argc, char ** argv) {
 		printf("match the word '%s'.\n", argv[3]);
 
 		UnloadAutomaton(&regex);
+
+	} else if (strcmp(argv[1], "lexing") == 0) {
+
+		AutomatonVector regex = LoadRegex(argv[2]);
+		DestroyAutomatonVector(&regex);
+		printf("Done!\n");
 
 	} else {
 		fprintf(stderr, "Unknown mode : '%s'\n", argv[1]);
