@@ -28,13 +28,6 @@ void PushVector(Vector * v, Element e) {
 		v->content = realloc(v->content, sizeof(Element) * v->allocated);
 	}
 
-	printf("========= TOP BUN ==========\n");
-	v->content[v->length] = (Element) {NULL, 0};
-	printf("MYSTERY: %p\n", v->content + v->length);
-	printf("ALLOCATED %llu from %p\n", v->allocated * sizeof(Element), v->content);
-	printf("LENGTH: %llu, ALLOCATED: %llu\n", v->length * sizeof(Element), v->allocated * sizeof(Element));
-	printf("======== BOTTOM BUN =========\n");
-
 	v->content[v->length] = (Element) {
 		malloc(e.size),
 		e.size

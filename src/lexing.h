@@ -21,7 +21,7 @@ typedef struct {
 
 LexingToken * Tokenize(char * regex, char * code);
 
-LexingToken GetNextToken(AutomatonVector, FILE *);
+LexingToken GetNextToken(AutomatonVector, FILE *, size_t);
 
 AutomatonVector CreateAutomatonVector();
 void DestroyAutomatonVector(AutomatonVector*);

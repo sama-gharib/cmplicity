@@ -78,7 +78,6 @@ int main(int argc, char ** argv) {
 		}
 		printf("EOF from %llu to %llu\n", tokens[index].begin, tokens[index].end);
 		free(tokens);
-		printf("Done!\n");
 
 	} else {
 		fprintf(stderr, "Unknown mode : '%s'\n", argv[1]);

@@ -28,9 +28,9 @@ LexingToken * Tokenize(char * regex, char * code) {
 
 	while (true) {
 
-		LexingToken new_token = GetNextToken(exprs, src);
+		LexingToken new_token = GetNextToken(exprs, src, char_num);
 		if (new_token.begin == new_token.end) {
-			fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
+			// fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
 			break;
 		} else {
 			new_token.begin = char_num;
@@ -55,7 +55,7 @@ LexingToken * Tokenize(char * regex, char * code) {
 	return tokens;
 }
 
-LexingToken GetNextToken(AutomatonVector automatons, FILE * source) {
+LexingToken GetNextToken(AutomatonVector automatons, FILE * source, size_t char_num) {
 	ParsingBuffer buffer = InitParsingBuffer();
 
 	size_t i = 0;
@@ -64,7 +64,12 @@ LexingToken GetNextToken(AutomatonVector automatons, FILE * source) {
 
 	size_t initial = ftell(source);
 
-	while (i < PARSING_BUFFER_SIZE && fread(&current, 1, 1, source)) {
+	while (fread(&current, 1, 1, source)) {
+
+		if (i >= PARSING_BUFFER_SIZE) {
+			fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
+			break;
+		}
 
 		for (size_t a = 0; a < automatons.length; a++) {
 			if (Match(automatons.data[a].initial, buffer.content, 0)) {
@@ -142,7 +147,6 @@ AutomatonVector LoadRegex(char * src) {
 			break;
 			case 1:
 				if (!read || current == '\n') {
-					printf("'%s'\n", expr_buffer.content);
 					PushAutomatonVector(&parsed, CompileRegex(expr_buffer.content), name_buffer.content);
 					ClearParsingBuffer(&name_buffer);
 					ClearParsingBuffer(&expr_buffer);
