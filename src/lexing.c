@@ -66,7 +66,7 @@ LexingToken GetNextToken(AutomatonVector automatons, FILE * source, size_t char_
 
 	while (fread(&current, 1, 1, source)) {
 
-		if (i >= PARSING_BUFFER_SIZE) {
+		if (i >= PARSING_BUFFER_SIZE - 1) {
 			fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
 			break;
 		}
@@ -77,7 +77,9 @@ LexingToken GetNextToken(AutomatonVector automatons, FILE * source, size_t char_
 				to_return.end = i;
 			}
 		}
+		printf("A\n");
 		PushParsingBuffer(&buffer, current);
+		printf("B %llu\n", i);
 
 		i++;
 	}
