@@ -306,6 +306,8 @@ Automaton AutomatonUnion(Automaton * a, Automaton * b) {
 	PushVector(&result.states, (Element) {&new_initial, sizeof(State)});
 
 	result.states.content = realloc(result.states.content, sizeof(Element) * new_length);
+	result.states.allocated = new_length;
+	
 	for (size_t i = 0; i < a->states.length; i++) {
 		result.states.content[i+1] = a->states.content[i];
 	}
@@ -461,7 +463,7 @@ Automaton AutomatonPlus(Automaton * a) {
 }
 
 Automaton AutomatonOption(Automaton * a) {
-	
+
 	State s = CreateState(true);
 	PushVector(&a->states, (Element) {
 		&s,
@@ -469,7 +471,6 @@ Automaton AutomatonOption(Automaton * a) {
 	});
 	// No need to destroy s since its vector value is
 	// moved out
-
 	State * last_state = (State*) a->states.content[a->states.length-1].data;
 	for (size_t j = 0; j < a->initial->successors.length; j++) {
 		PushVector(&last_state->successors, a->initial->successors.content[j]);

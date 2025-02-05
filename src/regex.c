@@ -4,64 +4,12 @@
 
 Automaton CompileRegex(char * src) {
 
-	//printf("\tTokenization...\n");
 	RegexToken * tokens = TokenizeRegex(src);
 	size_t i = 0;
-	//printf("'");
-	while (tokens[i].terminal != RTEnd) {
-		char * to_print;
-		switch (tokens[i].terminal) {
-			case RTStar:
-				//printf("*");
-			break;
-			case RTPlus:
-				//printf("+");
-			break;
-			case RTOption:
-				//printf("?");
-			break;
-			case RTAny:
-				//printf(".");
-			break;
-			case RTOpen:
-				//printf("(");
-			break;
-			case RTClose:
-				//printf(")");
-			break;
-			case RTOpenBracket:
-				//printf("[");
-			break;
-			case RTCloseBracket:
-				//printf("]");
-			break;
-			case RTUnion:
-				//printf("|");
-			break;
-			case RTRangeTo:
-				//printf("-");
-			break;
-			case RTEmpty:
-				//printf("Empty");
-			break;
-			case RTLetter:
-				//printf("\\%c", tokens[i].symbol);
-			break;
-			case RTEnd:
-				//printf("$");
-			break;
-		}
-
-		i++;
-	}
-
-	//printf("'\n\tDone.\n");
 
 	size_t cursor = 0;
 
-	//printf("\tBuilding automaton for '%s'...\n", src);
 	Automaton result = ParserUnion(tokens, &cursor, true);
-	//printf("\tDone.\n");
 
 	free(tokens);
 

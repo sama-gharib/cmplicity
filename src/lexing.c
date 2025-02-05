@@ -142,6 +142,7 @@ AutomatonVector LoadRegex(char * src) {
 			break;
 			case 1:
 				if (!read || current == '\n') {
+					printf("'%s'\n", expr_buffer.content);
 					PushAutomatonVector(&parsed, CompileRegex(expr_buffer.content), name_buffer.content);
 					ClearParsingBuffer(&name_buffer);
 					ClearParsingBuffer(&expr_buffer);
