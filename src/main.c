@@ -70,8 +70,14 @@ int main(int argc, char ** argv) {
 
 	} else if (strcmp(argv[1], "lexing") == 0) {
 
-		AutomatonVector regex = LoadRegex(argv[2]);
-		DestroyAutomatonVector(&regex);
+		LexingToken * tokens = Tokenize(argv[2], argv[3]);
+		size_t index = 0;
+		while ( strcmp(tokens[index].id, "EOF") != 0 ) {
+			printf("%s from %llu to %llu\n", tokens[index].id, tokens[index].begin, tokens[index].end);
+			index++;
+		}
+		printf("EOF from %llu to %llu\n", tokens[index].begin, tokens[index].end);
+		free(tokens);
 		printf("Done!\n");
 
 	} else {
@@ -81,149 +87,4 @@ int main(int argc, char ** argv) {
 
 	return exit_code;
 
-	/*
-	// Regex testing code
-
-	printf("Compiling regex...\n");
-	Automaton test = CompileRegex("[a-z]*\\.[a-z]*(@(gmail\\.com|outlook\\.fr))?");
-	printf("Regex compiled !\n");
-
-	printf("Initial : %p\n", test.initial);
-	for (size_t i = 0; i < test.states.length; i++) {
-		State* current_state = (State*) test.states.content[i].data;
-		if (current_state->final) {
-			printf("%p is final\n", current_state);
-		}
-		for (size_t j = 0; j < current_state->successors.length; j++) {
-			Transition* current_transition = (Transition*) current_state->successors.content[j].data;
-			printf("(%p, %c, %c, %p)\n", current_state, current_transition->min, current_transition->max, current_transition->target);
-		}
-	}
-
-	bool matches[] = {
-		Match(test.initial, "sama.gharib", 0),
-		Match(test.initial, "sama.gharib@gmail.com", 0),
-		Match(test.initial, "sama.gharib@", 0)
-	};
-
-	UnloadAutomaton(&test);
-
-	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
-
-	return EXIT_SUCCESS;
-	*/
-
-	/*
-	// Automaton Star test code
-	Automaton quote = LoadAutomaton("\
-States: OpeningQuote, Content, ClosingQuote;\
-Finals: ClosingQuote;\
-Initial: OpeningQuote;\
-Transitions:\
-	(OpeningQuote, \", Content),\
-	(Content, [a-z], Content),\
-	(Content, \", ClosingQuote);\
-");
-
-	Automaton value = AutomatonPlus(&quote);
-
-	bool matches[] = {
-		Match(value.initial, "\"abc\"\"abc\"", 0),
-		Match(value.initial, "\"hello\"", 0),
-		Match(value.initial, "", 0)
-	};
-
-	UnloadAutomaton(&value);
-
-	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
-
-	return EXIT_SUCCESS;
-	*/
-
-	/*
-	// Automaton Union test code
-	Automaton nbr = LoadAutomaton("\
-States: Sign, FirstDigitAfterSign, IntegerPart, FloatPart;\
-Finals: IntegerPart, FloatPart;\
-Initial: Sign;\
-Transitions:\
-    (Sign, +, FirstDigitAfterSign),\
-    (Sign, -, FirstDigitAfterSign),\
-    (FirstDigitAfterSign, [0-9], IntegerPart),\
-    (Sign, [0-9], IntegerPart),\
-    (IntegerPart, [0-9], IntegerPart),\
-    (IntegerPart, ., FloatPart),\
-    (FloatPart, [0-9], FloatPart);\
-\
-");
-	Automaton quote = LoadAutomaton("\
-States: OpeningQuote, Content, ClosingQuote;\
-Finals: ClosingQuote;\
-Initial: OpeningQuote;\
-Transitions:\
-	(OpeningQuote, \", Content),\
-	(Content, [a-z], Content),\
-	(Content, \", ClosingQuote);\
-");
-	Automaton value = AutomatonUnion(&nbr, &quote);
-
-	bool matches[] = {
-		Match(value.initial, "+123.145", 0),
-		Match(value.initial, "\"hello\"", 0),
-		Match(value.initial, "yooo", 0)
-	};
-
-	printf("value.states : ");
-	for(size_t i = 0; i < value.states.length; i++) {
-		printf("%p ", value.states.content[i].data);
-	}
-	printf("\n");
-
-	UnloadAutomaton(&value);
-
-	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
-
-	return EXIT_SUCCESS;
-	*/
-
-	/*
-	// Automaton Concatenation test code
-	Automaton nbr = LoadAutomaton("\
-States: Sign, FirstDigitAfterSign, IntegerPart, FloatPart;\
-Finals: IntegerPart, FloatPart;\
-Initial: Sign;\
-Transitions:\
-    (Sign, +, FirstDigitAfterSign),\
-    (Sign, -, FirstDigitAfterSign),\
-    (FirstDigitAfterSign, [0-9], IntegerPart),\
-    (Sign, [0-9], IntegerPart),\
-    (IntegerPart, [0-9], IntegerPart),\
-    (IntegerPart, ., FloatPart),\
-    (FloatPart, [0-9], FloatPart);\
-\
-");
-	Automaton quote = LoadAutomaton("\
-States: OpeningQuote, Content, ClosingQuote;\
-Finals: ClosingQuote;\
-Initial: OpeningQuote;\
-Transitions:\
-	(OpeningQuote, \", Content),\
-	(Content, [a-z], Content),\
-	(Content, \", ClosingQuote);\
-");
-	Automaton value = AutomatonConcatenation(&nbr, &quote);
-
-
-	bool matches[] = {
-		Match(value.initial, "+123.145\"dab\"", 0),
-		Match(value.initial, "\"hello\"87", 0),
-		Match(value.initial, "999", 0)
-	};
-
-	UnloadAutomaton(&value);
-
-	printf("Results: %d %d %d\n", matches[0], matches[1], matches[2]);
-
-	return EXIT_SUCCESS;
-	*/
 }
