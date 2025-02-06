@@ -9,17 +9,6 @@
 int main(int argc, char ** argv) {
 
 
-	LexingToken * tokens = Tokenize("test_lexing.rgx", "test_lexing.src");
-	size_t index = 0;
-	while ( strcmp(tokens[index].id, "EOF") != 0 ) {
-		printf("%s from %llu to %llu\n", tokens[index].id, tokens[index].begin, tokens[index].end);
-		index++;
-	}
-	printf("EOF from %llu to %llu\n", tokens[index].begin, tokens[index].end);
-	free(tokens);
-	
-
-	/*
 	if (argc != 4) {
 		printf("Usage : cmp ['automaton' filepath | 'regex' your_regex | 'lexing' regex_file code_file] word_to_test\n");
 
@@ -97,6 +86,5 @@ int main(int argc, char ** argv) {
 	}
 
 	return exit_code;
-	*/
-
+	
 }
