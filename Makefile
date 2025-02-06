@@ -1,4 +1,4 @@
-examples: examples/number.atm examples/test_lexing.rgx examples/test_lexing.src
+run_examples: examples/number.atm examples/test_lexing.rgx examples/test_lexing.src
 	@echo "=== Testing the automaton that recognize numbers ==="
 	@./cmp automaton examples/number.atm 123.545
 	@./cmp automaton examples/number.atm +12
@@ -19,7 +19,7 @@ examples: examples/number.atm examples/test_lexing.rgx examples/test_lexing.src
 	@echo "=== Testing lexing ==="
 	@./cmp lexing examples/test_lexing.rgx examples/test_lexing.src
 
-examples/test_lexing.rgx examples/test_lexing.src: examples
+examples/test_lexing.rgx examples/test_lexing.src: examples/
 	@echo "Number (\+|\-)?[0-9]+(\.[0-9]+)?" >> examples/test_lexing.rgx
 	@echo "Identifier ([a-z]|_)+" >> examples/test_lexing.rgx
 	@echo "Macro [A-Z]+" >> examples/test_lexing.rgx
@@ -29,7 +29,7 @@ examples/test_lexing.rgx examples/test_lexing.src: examples
 	@echo "Assignation <\-|=" >> examples/test_lexing.rgx
 	@echo "BlockStart {" >> examples/test_lexing.rgx
 	@echo "BlockEnd }" >> examples/test_lexing.rgx
-	@echo "Space  " >> examples/test_lexing.rgx
+	@echo "Space \s" >> examples/test_lexing.rgx
 	@echo "BreakLine \n" >> examples/test_lexing.rgx
 	@echo "Tabulation \t" >> examples/test_lexing.rgx
 

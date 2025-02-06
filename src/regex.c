@@ -48,6 +48,13 @@ RegexToken * TokenizeRegex(char * src) {
 						'\t'
 					};
 				break;
+				case 's':
+					token_array[lag] = (RegexToken) {
+						true,
+						RTLetter,
+						' '
+					};
+				break; 
 				case 'r':
 					token_array[lag] = (RegexToken) {
 						true,
