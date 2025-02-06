@@ -33,11 +33,37 @@ RegexToken * TokenizeRegex(char * src) {
 		char c = src[cursor];
 
 		if (escaped) {
-			token_array[lag] = (RegexToken) {
-				true,
-				RTLetter,
-				c
-			};
+			switch (c) {
+				case 'n':
+					token_array[lag] = (RegexToken) {
+						true,
+						RTLetter,
+						'\n'
+					};
+				break;
+				case 't':
+					token_array[lag] = (RegexToken) {
+						true,
+						RTLetter,
+						'\t'
+					};
+				break;
+				case 'r':
+					token_array[lag] = (RegexToken) {
+						true,
+						RTLetter,
+						'\r'
+					};
+				break;
+				default:
+					token_array[lag] = (RegexToken) {
+						true,
+						RTLetter,
+						c
+					};
+				break;
+			}
+			
 			escaped = false;
 		} else {
 			switch (src[cursor]) {
@@ -182,14 +208,16 @@ OperationOrder ParserUnionRight(RegexToken * src, size_t * ind) {
 	if (t.terminal == RTUnion) {
 		(*ind) ++;
 		Automaton c  = ParserConcat(src, ind);
-		Automaton up = ParserUnion(src, ind, false);
+		OperationOrder up = ParserUnionRight(src, ind);
+		if (up.type == OTUnion) {
+			c = AutomatonUnion(&c, &up.on);
+		} else {
+			UnloadAutomaton(&up.on);
+		}
 
 		return (OperationOrder) {
 			OTUnion,
-			AutomatonUnion(
-				&c,
-				&up
-			)
+			c
 		};
 	} else if (t.terminal == RTClose || t.terminal == RTEnd) {
 		return (OperationOrder) {
@@ -384,7 +412,7 @@ Automaton ParserUnit(RegexToken * src, size_t * ind) {
 		(*ind) --;
 		return ParserRange(src, ind);
 	} else if (t.terminal == RTAny) {
-		return SingleLetterAutomaton(' ', '~');
+		return SingleLetterAutomaton(0, 255);
 	} else {
 		fprintf(stderr, "Unit Error: Unexpected token: %c\n", t.symbol);
 		return DefaultAutomaton();

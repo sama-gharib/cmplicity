@@ -30,7 +30,6 @@ LexingToken * Tokenize(char * regex, char * code) {
 
 		LexingToken new_token = GetNextToken(exprs, src, char_num);
 		if (new_token.begin == new_token.end) {
-			// fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
 			break;
 		} else {
 			new_token.begin = char_num;
@@ -63,26 +62,39 @@ LexingToken GetNextToken(AutomatonVector automatons, FILE * source, size_t char_
 	LexingToken to_return = {0, 0, "Unknown Token"};
 
 	size_t initial = ftell(source);
+	bool should_break = false;
 
-	while (fread(&current, 1, 1, source)) {
-
-		if (i >= PARSING_BUFFER_SIZE - 1) {
-			fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
+	while (true) {
+		if (should_break) {
 			break;
 		}
 
+		bool read = fread(&current, 1, 1, source);
+
+		if (!read) {
+			should_break = true;
+		}
+		if (i >= PARSING_BUFFER_SIZE - 1) {
+			if (to_return.begin == to_return.end)
+				fprintf(stderr, "Unknown token at character %llu: Interpreting as EOF\n", char_num);
+			
+			break;
+		}
+
+
 		for (size_t a = 0; a < automatons.length; a++) {
+
 			if (Match(automatons.data[a].initial, buffer.content, 0)) {
 				strcpy(to_return.id, automatons.names[a]);
 				to_return.end = i;
 			}
 		}
-		printf("A\n");
+
 		PushParsingBuffer(&buffer, current);
-		printf("B %llu\n", i);
 
 		i++;
 	}
+
 	fseek(source, initial + to_return.end, 0);
 
 	return to_return;
@@ -111,7 +123,7 @@ void PushAutomatonVector(AutomatonVector * av, Automaton a, char * n) {
 	if (av->length%AUTOMATON_VECTOR_BUFFER_SIZE == 0 && av->length != 0) {
 		size_t new_length = (av->length + AUTOMATON_VECTOR_BUFFER_SIZE);
 		av->data = realloc(av->data, sizeof(Automaton) * new_length);
-		av->names = realloc(av->data, sizeof(char*) * new_length);
+		av->names = realloc(av->names, sizeof(char*) * new_length);
 	}
 	av->data[av->length] = a;
 	av->names[av->length] = AllocateString(n);
