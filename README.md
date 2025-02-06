@@ -36,5 +36,5 @@ STRING : SINGLE_TERMINAL STRING | nil
 
 ## Roadmap
 
-1. Do tokenization from regex
-1. Implement a minimal language as proof of concept
+1. Test edgecases (particularly regarding lexing)
+2. Add documentation
